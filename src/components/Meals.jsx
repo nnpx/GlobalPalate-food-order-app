@@ -11,7 +11,7 @@ export default function Meals() {
     error,
     // {} is recreated everytime Meals function runs -> infinite loop
     // } = useHttp("http://localhost:3000/meals", {}, []);
-  } = useHttp("http://localhost:3000/meals", requestConfig, []);
+  } = useHttp(`${import.meta.env.VITE_BACKEND_URL}/meals`, requestConfig, []);
 
   if (isLoading) {
     return <p className="center">Fetching meals...</p>;
