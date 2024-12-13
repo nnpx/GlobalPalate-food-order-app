@@ -1,10 +1,6 @@
-import { useContext } from "react";
-
 import Modal from "./UI/Modal";
 import Button from "./UI/Button";
-import CartContext from "../store/CartContext";
 import { currencyFormatter } from "../util/formatting";
-import UserProgressContext from "../store/UserProgressContext";
 import CartItem from "./CartItem";
 
 import { useSelector, useDispatch } from "react-redux";
