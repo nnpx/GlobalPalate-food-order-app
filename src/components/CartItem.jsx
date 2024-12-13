@@ -1,21 +1,23 @@
 import { currencyFormatter } from "../util/formatting";
 
-export default function CartItem({
-  name,
-  quantity,
-  price,
-  onIncrease,
-  onDecrease,
-}) {
+import { useDispatch } from "react-redux";
+import { addItem, removeItem } from "../store/cartSlice";
+
+export default function CartItem({ id, name, quantity, price }) {
+  const dispatch = useDispatch();
+
   return (
     <li className="cart-item">
       <p>
         {name} - {quantity} x {currencyFormatter.format(price)}
       </p>
       <p className="cart-item-actions">
-        <button onClick={onDecrease}>-</button>
+        <button onClick={() => dispatch(removeItem(id))}>-</button>
+
         <p>{quantity}</p>
-        <button onClick={onIncrease}>+</button>
+        <button onClick={() => dispatch(addItem({ id, name, price }))}>
+          +
+        </button>
       </p>
     </li>
   );

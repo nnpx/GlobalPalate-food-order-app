@@ -1,12 +1,13 @@
-import { useContext } from "react";
 import Modal from "./UI/Modal";
-import CartContext from "../store/CartContext";
 import { currencyFormatter } from "../util/formatting";
 import Input from "./UI/Input";
 import Button from "./UI/Button";
-import UserProgressContext from "../store/UserProgressContext";
 import useHttp from "../hooks/useHttp";
 import Error from "./Error";
+
+import { useSelector, useDispatch } from "react-redux";
+import { hideCheckout } from "../store/userProgressSlice";
+import { clearCart } from "../store/cartSlice";
 
 const requestConfig = {
   method: "POST",
@@ -16,8 +17,9 @@ const requestConfig = {
 };
 
 export default function Checkout() {
-  const cartCtx = useContext(CartContext);
-  const userProgressCtx = useContext(UserProgressContext);
+  const dispatch = useDispatch();
+  const userProgress = useSelector((state) => state.userProgress.progress);
+  const cartState = useSelector((state) => state.cart);
 
   const {
     data,
@@ -27,19 +29,18 @@ export default function Checkout() {
     clearData,
   } = useHttp(`${import.meta.env.VITE_BACKEND_URL}/orders`, requestConfig);
 
-  const cartTotal = cartCtx.items.reduce(
+  const cartTotal = cartState.items.reduce(
     (totalPrice, item) => totalPrice + item.quantity * item.price,
     0
   );
 
   function handleClose() {
-    userProgressCtx.hideCheckout();
+    dispatch(hideCheckout());
   }
 
   function handleFinish() {
-    userProgressCtx.hideCheckout();
-    cartCtx.clearCart();
-    clearData();
+    dispatch(hideCheckout());
+    dispatch(clearCart());
   }
 
   function handleSubmit(event) {
@@ -51,7 +52,7 @@ export default function Checkout() {
     sendRequest(
       JSON.stringify({
         order: {
-          items: cartCtx.items,
+          items: cartState.items,
           customer: customerData,
         },
       })
@@ -74,10 +75,7 @@ export default function Checkout() {
   // success page
   if (data && !error) {
     return (
-      <Modal
-        open={userProgressCtx.progress === "checkout"}
-        onClose={handleClose}
-      >
+      <Modal open={userProgress === "checkout"} onClose={handleClose}>
         <h2>Success!</h2>
         <p>Your order was submitted successfully.</p>
         <p>
@@ -92,7 +90,7 @@ export default function Checkout() {
   }
 
   return (
-    <Modal open={userProgressCtx.progress === "checkout"} onClose={handleClose}>
+    <Modal open={userProgress === "checkout"} onClose={handleClose}>
       <form onSubmit={handleSubmit}>
         <h2>Checkout</h2>
         <p>Total Amount: {currencyFormatter.format(cartTotal)}</p>

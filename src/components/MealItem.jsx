@@ -1,15 +1,14 @@
-import { useContext } from "react";
-
 import Button from "./UI/Button";
-import CartContext from "../store/CartContext";
 import { currencyFormatter } from "../util/formatting";
 
-export default function MealItem({ meal }) {
-  const cartCtx = useContext(CartContext);
+import { useDispatch } from "react-redux";
+import { addItem } from "../store/cartSlice";
 
-  function handleAddMealToCart() {
-    cartCtx.addItem(meal);
-  }
+export default function MealItem({ meal }) {
+  const dispatch = useDispatch();
+  const id = meal.id;
+  const name = meal.name;
+  const price = meal.price;
 
   return (
     <li className="meal-item">
@@ -26,7 +25,10 @@ export default function MealItem({ meal }) {
           <p className="meal-item-description">{meal.description}</p>
         </div>
         <p className="meal-item-actions">
-          <Button onClick={handleAddMealToCart}>Add to cart</Button>
+          {/* <Button onClick={handleAddMealToCart}>Add to cart</Button> */}
+          <Button onClick={() => dispatch(addItem({ id, name, price }))}>
+            Add to cart
+          </Button>
         </p>
       </article>
     </li>
