@@ -23,6 +23,8 @@ export default function Meals() {
 
   return (
     <ul id="meals">
+      {console.log(`Meals.jsx loadedMeals: ${loadedMeals}`)}
+      {console.log(`Meals.jsx error: ${error}`)}
       {loadedMeals.map((meal) => (
         <MealItem key={meal.id} id={meal.id} meal={meal} />
       ))}
