@@ -23,6 +23,7 @@ export default function Meals() {
 
   return (
     <ul id="meals">
+      {console.log(import.meta.env.VITE_BACKEND_URL)}
       {console.log(`Meals.jsx loadedMeals: ${loadedMeals}`)}
       {console.log(`Meals.jsx error: ${error}`)}
       {loadedMeals.map((meal) => (
